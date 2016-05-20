@@ -1,0 +1,67 @@
+---
+title: "Statistical Inference Project II"
+author: "Xinli"
+date: "May 19, 2016"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+**1. Load the ToothGrowth data and perform some basic exploratory data analyses**
+```{r}
+library(datasets)
+data(ToothGrowth)
+require(graphics)
+coplot(len ~ dose | supp, data = ToothGrowth, panel = panel.smooth,
+      xlab = "dose")
+```
+
+
+**2. Provide a basic summary of the data.**
+```{r}
+summary(ToothGrowth)
+table(ToothGrowth$dose, ToothGrowth$supp)
+```
+
+
+**3. Use confidence intervals and/or hypothesis tests to compare tooth growth by supp and dose.** 
+
+Comparing tooth growth by supplements:
+```{r}
+OJ=ToothGrowth$len[ToothGrowth$supp=="OJ"]
+VC=ToothGrowth$len[ToothGrowth$supp=="VC"]
+t.test(OJ,VC)
+```
+The p-value is 0.006. The null hypothesis is not rejected. So supplement types have no effect on tooth length.
+
+
+Comparing tooth growth by dose:
+```{r}
+t.test(len~dose, data=ToothGrowth[ToothGrowth$dose %in% c(0.5,1),])$p.value
+t.test(len~dose, data=ToothGrowth[ToothGrowth$dose %in% c(0.5,2),])$p.value
+t.test(len~dose, data=ToothGrowth[ToothGrowth$dose %in% c(1,2),])$p.value
+```
+
+Under Bonferroni correction, there are 3 tests. So adjuested alpha = alpha/3 = 0.0167. All the p values of t tests are less than adjuested alpha. So the null hypothesis is rejected. That is to say, the increase in dose leads to increase in tooth length.
+
+
+**4. State your conclusions and the assumptions needed for your conclusions.**
+
+
+Conclusions:
+
+1. Supplement types have no effect on tooth length.
+
+2. The increase in dose leads to increase in tooth length.
+
+
+Assumptions:
+
+1. The experiment was done randomized.
+
+2. The samples could represent the population.
+
+3. For t-tests, variances are assumed to be different. 
